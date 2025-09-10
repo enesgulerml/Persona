@@ -59,23 +59,6 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## 🗂 Project Structure
-Persona/
-│
-├─ app.py                  # Main app entry point
-├─ requirements.txt        # Python dependencies
-├─ sections/
-│   ├─ movie_demo.py       # Movie & Series tracking
-│   ├─ sport_demo.py       # Daily workout and records
-│   ├─ food_demo.py        # Nutrition & hydration
-│   └─ investment_demo.py  # Investment portfolio & predictions
-├─ data/                   # JSON files for persistent storage
-│   ├─ data_movie.json
-│   ├─ data_sport.json
-│   ├─ data_food.json
-│   └─ data_invest.json
-└─ README.md               # Project documentation
-
 ## 🎯 Notes
 
 All personal data is stored locally in JSON files.
@@ -94,3 +77,4 @@ Add reminders and notifications for workouts and nutrition.
 
 
 Enhance visualization with more charts and interactive dashboards.
+
