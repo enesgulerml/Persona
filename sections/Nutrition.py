@@ -3,13 +3,13 @@ import pandas as pd
 import altair as alt
 
 def calculate_macros(weight, height, age, gender, activity, goal):
-    # BMR Hesabı
+    # BMR Calculation
     if gender == "Male":
         bmr = 88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)
     else:
         bmr = 447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age)
 
-    # Aktivite katsayısı
+    # Activity coefficient
     activity_factors = {
         "Sedentary": 1.2,
         "Lightly Active": 1.375,
@@ -18,7 +18,7 @@ def calculate_macros(weight, height, age, gender, activity, goal):
     }
     tdee = bmr * activity_factors[activity]
 
-    # Hedefe göre kalori ve protein ayarı
+    # Calorie and protein adjustment according to target
     if goal == "Bulk":
         calories = tdee * 1.15
         protein = 1.8 * weight
@@ -29,10 +29,10 @@ def calculate_macros(weight, height, age, gender, activity, goal):
         calories = tdee
         protein = 1.6 * weight
 
-    # Makrolar
+    # Macros
     fat = 0.9 * weight
     carbs = (calories - (protein * 4 + fat * 9)) / 4
-    water = weight * 35 / 1000  # litre
+    water = weight * 35 / 1000  # liter
 
     return {
         "Calories": round(calories),
@@ -45,7 +45,7 @@ def calculate_macros(weight, height, age, gender, activity, goal):
 def show():
     st.title("Nutrition & Hydration Calculator")
 
-    # Kullanıcı inputları
+    # User inputs
     weight = st.number_input("Weight (kg):", min_value=30, max_value=200, value=70)
     height = st.number_input("Height (cm):", min_value=120, max_value=220, value=175)
     age = st.number_input("Age:", min_value=10, max_value=80, value=25)
@@ -56,11 +56,11 @@ def show():
     if st.button("Calculate"):
         result = calculate_macros(weight, height, age, gender, activity, goal)
 
-        # Sonuçları tablo halinde göster
+        # Show results in tabular form
         st.subheader("Your Daily Targets")
         st.table(pd.DataFrame([result]))
 
-        # Pie Chart için Data
+        # Data for Pie Chart
         macro_data = pd.DataFrame({
             "Macro": ["Protein", "Fat", "Carbs"],
             "Grams": [result["Protein (g)"], result["Fat (g)"], result["Carbs (g)"]]
@@ -79,6 +79,6 @@ def show():
 
         st.altair_chart(chart, use_container_width=True)
 
-        # Su miktarını ayrıca gösterelim
+        # Let's also show the amount of water
         st.info(f"You should drink about **{result['Water (L)']} L** of water per day.")
 
