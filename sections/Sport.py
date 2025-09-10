@@ -8,7 +8,7 @@ from datetime import date
 FILE_PATH = "sport_data.json"
 EXERCISES = ["Squat", "Bench Press", "Deadlift", "Overhead Press", "Barbell Row"]
 
-# JSON yükleme ve default yapıları oluşturma
+# Loading JSON and creating default structures
 def load_data():
     if os.path.exists(FILE_PATH):
         with open(FILE_PATH, "r") as f:
@@ -30,7 +30,7 @@ def show():
     if "data" not in st.session_state:
         st.session_state.data = load_data()
 
-    # Günlük program
+    # daily schedule
     st.subheader("Daily Program")
     selected_day = st.date_input("Select date", date.today())
     day_key = str(selected_day)
@@ -38,18 +38,18 @@ def show():
     if day_key not in st.session_state.data["daily_programs"]:
         st.session_state.data["daily_programs"][day_key] = EXERCISES.copy()
 
-    # Yeni hareket ekleme
+    # Add new gesture
     new_ex = st.text_input("Add new exercise to today's program:")
     if st.button("Add Exercise"):
         if new_ex.strip():
             ex_name = new_ex.strip()
             st.session_state.data["daily_programs"][day_key].append(ex_name)
-            # Rekorlar kısmına da ekle
+            # Add to records section
             st.session_state.data["records"].setdefault(ex_name, [])
             save_data()
             st.rerun()
 
-    # Mevcut hareketleri checkbox + delete butonuyla göster
+    # Show current transactions with checkbox + delete button
     st.write("Today's Exercises:")
     exercises_copy = st.session_state.data["daily_programs"][day_key].copy()
     for idx, ex in enumerate(exercises_copy):
@@ -57,17 +57,17 @@ def show():
         done = cols[0].checkbox(ex, key=f"{day_key}_{idx}")
         if cols[1].button("Delete", key=f"del_{day_key}_{idx}"):
             st.session_state.data["daily_programs"][day_key].pop(idx)
-            # Rekorlar kısmından silmek istersen:
+            
             st.session_state.data["records"].pop(ex, None)
             save_data()
             st.rerun()
 
     st.markdown("---")
 
-    # Rekorlar
+    # records
     st.subheader("Records")
 
-    # Dropdown: tüm kayıtlı hareketler + yeni eklenen hareketler
+    # Dropdown: all recorded moves + newly added moves
     all_exercises = list(st.session_state.data["records"].keys())
     ex_choice = st.selectbox("Select Exercise:", all_exercises)
 
@@ -82,7 +82,7 @@ def show():
             save_data()
             st.rerun()
 
-    # Mevcut kayıtları göster ve sil
+    # Show and delete existing records
     if st.session_state.data["records"].get(ex_choice):
         records_copy = st.session_state.data["records"][ex_choice].copy()
         for idx, rec in enumerate(records_copy):
@@ -93,7 +93,7 @@ def show():
                 save_data()
                 st.rerun()
 
-        # Grafik
+        # graph
         st.subheader("📊 Progress Graph")
         df = pd.DataFrame(st.session_state.data["records"][ex_choice])
         df["date"] = pd.to_datetime(df["date"])
